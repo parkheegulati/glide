@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" fill="none">
+  <defs>
+    <filter id="soft-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <!-- Wrench Outer Shape -->
+  <g fill="#3D3B39">
+    <!-- Main Wrench Path with U-cutout -->
+    <path fill-rule="evenodd" clip-rule="evenodd" d="
+      M 64 110
+      L 64 212
+      C 64 227.46 76.54 240 92 240
+      L 108 240
+      C 123.46 240 136 227.46 136 212
+      L 136 110
+      C 160.8 98.4 176 74.2 176 46
+      C 176 39.5 174.8 33.2 172.5 27.2
+      C 162.2 46.8 143.5 58 126 58
+      C 126 58 126 58 126 58
+      C 118 58 118 58 118 58
+      C 118 58 118 58 118 58
+      C 82 58 82 58 82 58
+      C 82 58 82 58 82 58
+      C 64.5 58 45.8 46.8 35.5 27.2
+      C 33.2 33.2 32 39.5 32 46
+      C 32 74.2 47.2 98.4 72 110
+      Z
+    " style="display:none" />
+
+    <!-- Pure Precision Wrench Geometry matching image -->
+    <!-- Wrench Head Curved Arms -->
+    <path d="
+      M 34 32
+      C 27 43 23 56 23 70
+      C 23 108 51 139 88 145
+      L 66 145
+      L 66 212
+      C 66 227.5 78.5 240 94 240
+      L 106 240
+      C 121.5 240 134 227.5 134 212
+      L 134 145
+      L 112 145
+      C 149 139 177 108 177 70
+      C 177 56 173 43 166 32
+      C 152 56 128 72 100 72
+      C 72 72 48 56 34 32
+      Z
+    " />
+    <!-- Handle -->
+    <rect x="66" y="110" width="68" height="106" rx="18" />
+  </g>
+
+  <!-- Smartphone Body in center -->
+  <rect x="68" y="32" width="64" height="78" rx="14" fill="#FFFFFF" stroke="#3D3B39" stroke-width="4.5"/>
+
+  <!-- App Grid (3x3 Colorful Rounded Squares) -->
+  <!-- Row 1 -->
+  <rect x="76" y="40" width="12" height="12" rx="2.5" fill="#4AA8DB" />
+  <rect x="94" y="40" width="12" height="12" rx="2.5" fill="#AFD135" />
+  <rect x="112" y="40" width="12" height="12" rx="2.5" fill="#E52E38" />
+
+  <!-- Row 2 -->
+  <rect x="76" y="58" width="12" height="12" rx="2.5" fill="#F39824" />
+  <rect x="94" y="58" width="12" height="12" rx="2.5" fill="#88C542" />
+  <rect x="112" y="58" width="12" height="12" rx="2.5" fill="#25A196" />
+
+  <!-- Row 3 -->
+  <rect x="76" y="76" width="12" height="12" rx="2.5" fill="#4AA8DB" />
+  <rect x="94" y="76" width="12" height="12" rx="2.5" fill="#AFD135" />
+  <rect x="112" y="76" width="12" height="12" rx="2.5" fill="#E61975" />
+
+  <!-- Home Button -->
+  <circle cx="100" cy="98" r="4.5" fill="#3D3B39" />
+</svg>

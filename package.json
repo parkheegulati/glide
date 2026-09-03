@@ -1,0 +1,23 @@
+{
+  "name": "glide",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Glide — EMI Store with mutual-fund-backed installment plans",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "seed": "cd backend && npx prisma db seed",
+    "db:push": "cd backend && npx prisma db push",
+    "db:migrate": "cd backend && npx prisma migrate dev",
+    "build": "cd frontend && npm run build"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "@neon/config": "^1.2.0",
+    "@neon/env": "^1.2.0"
+  }
+}

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glide — Portfolio Presentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --accent:#5B21B6; --accent-hover:#7C3AED; --accent-light:#F5F3FF;
+      --success:#15803D; --success-bg:#F0FDF4; --dark:#0F0A1A;
+      --gray:#6B7280; --divider:#E5E7EB;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',-apple-system,sans-serif;background:var(--dark);color:#fff;overflow:hidden;height:100vh;width:100vw;-webkit-font-smoothing:antialiased;}
+    .deck{width:100%;height:100vh;position:relative;}
+    .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:60px 80px;opacity:0;transform:translateX(40px);transition:opacity 0.5s cubic-bezier(.16,1,.3,1),transform 0.5s cubic-bezier(.16,1,.3,1);pointer-events:none;}
+    .slide.active{opacity:1;transform:translateX(0);pointer-events:all;}
+    .bg-dark{background:var(--dark);}
+    .bg-white{background:#fff;color:var(--dark);}
+    .bg-subtle{background:#FAF9FC;color:var(--dark);}
+    .bg-accent{background:linear-gradient(135deg,#3B0F8F 0%,#5B21B6 55%,#7C3AED 100%);}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;background:rgba(91,33,182,.18);color:#c4b5fd;padding:5px 14px;border-radius:999px;border:1px solid rgba(196,181,253,.25);margin-bottom:18px;}
+    .bg-accent .eyebrow{background:rgba(255,255,255,.15);color:#ede9fe;border-color:rgba(255,255,255,.2);}
+    .eyebrow-dot{width:7px;height:7px;border-radius:50%;background:#a78bfa;}
+    h1{font-size:clamp(40px,6vw,72px);font-weight:900;letter-spacing:-0.04em;line-height:1.06;}
+    h2{font-size:clamp(28px,4vw,46px);font-weight:800;letter-spacing:-0.035em;line-height:1.12;}
+    h3{font-size:22px;font-weight:700;letter-spacing:-0.025em;}
+    .subtitle{font-size:clamp(15px,2vw,19px);font-weight:400;color:#a1a1aa;margin-top:14px;line-height:1.55;max-width:620px;}
+    .bg-white .subtitle,.bg-subtle .subtitle{color:var(--gray);}
+    .accent-text{color:#a78bfa;}
+    .slide-inner{max-width:1100px;width:100%;margin:0 auto;}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+    .three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+    .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:28px;}
+    .bg-white .card,.bg-subtle .card{background:#fff;border-color:var(--divider);box-shadow:0 1px 12px rgba(0,0,0,.06);}
+    .card-icon{width:48px;height:48px;background:rgba(167,139,250,.15);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px;}
+    .bg-white .card-icon,.bg-subtle .card-icon{background:var(--accent-light);}
+    .card h3{font-size:17px;font-weight:700;margin-bottom:8px;}
+    .card p{font-size:13.5px;line-height:1.6;color:#a1a1aa;}
+    .bg-white .card p,.bg-subtle .card p{color:var(--gray);}
+    .tech-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);font-size:14px;font-weight:600;}
+    .code-block{background:#0d0d14;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:24px 28px;font-family:'SF Mono','Fira Code',monospace;font-size:13px;line-height:1.75;color:#e2e8f0;overflow:auto;max-height:320px;}
+    .pill{display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.03em;}
+    .pill-green{background:#f0fdf4;color:#15803d;border:1px solid rgba(21,128,61,.2);}
+    .pill-violet{background:#f5f3ff;color:#5b21b6;border:1px solid rgba(91,33,182,.2);}
+    .stat-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:28px 24px;text-align:center;}
+    .stat-num{font-size:42px;font-weight:900;letter-spacing:-0.04em;color:#a78bfa;}
+    .stat-label{font-size:13px;color:#9ca3af;margin-top:4px;}
+    .er-box{background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.35);border-radius:14px;padding:16px 20px;font-size:13px;font-weight:600;white-space:pre;color:#ddd6fe;line-height:1.8;}
+    .route-table{width:100%;border-collapse:collapse;font-size:14px;}
+    .route-table th{text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#6b7280;padding:0 16px 10px;}
+    .route-table td{padding:11px 16px;border-top:1px solid rgba(255,255,255,.07);color:#e2e8f0;vertical-align:middle;}
+    .bg-white .route-table td,.bg-subtle .route-table td{color:#18181b;border-top-color:var(--divider);}
+    .method{font-family:'SF Mono',monospace;font-size:12px;font-weight:700;padding:3px 10px;border-radius:6px;}
+    .method-get{background:rgba(134,239,172,.12);color:#86efac;}
+    .method-post{background:rgba(251,191,36,.12);color:#fbbf24;}
+    .route-path{font-family:'SF Mono',monospace;font-size:13px;color:#c4b5fd;}
+    .progress-bar{position:fixed;bottom:0;left:0;height:3px;background:linear-gradient(90deg,#7C3AED,#a78bfa);transition:width 0.5s ease;z-index:100;}
+    .nav-controls{position:fixed;bottom:28px;right:36px;display:flex;align-items:center;gap:10px;z-index:100;}
+    .nav-btn{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;backdrop-filter:blur(8px);}
+    .nav-btn:hover{background:rgba(91,33,182,.5);border-color:rgba(167,139,250,.4);}
+    .slide-counter{font-size:13px;font-weight:600;color:rgba(255,255,255,.5);min-width:48px;text-align:center;}
+    .title-wordmark{font-size:88px;font-weight:900;letter-spacing:-0.06em;line-height:1;background:linear-gradient(135deg,#fff 0%,#c4b5fd 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .title-pill{padding:8px 20px;border-radius:999px;font-size:13px;font-weight:600;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#d8b4fe;}
+    .chat-bubble{border-radius:18px;padding:12px 18px;font-size:14px;line-height:1.55;max-width:80%;}
+    .chat-bubble.bot{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:#e2e8f0;border-radius:18px 18px 18px 4px;}
+    .chat-bubble.user{background:var(--accent);color:#fff;margin-left:auto;border-radius:18px 18px 4px 18px;}
+    .chat-row{display:flex;flex-direction:column;gap:12px;}
+    .hl-list{list-style:none;display:flex;flex-direction:column;gap:12px;}
+    .hl-list li{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:#e2e8f0;line-height:1.5;}
+    .bg-white .hl-list li,.bg-subtle .hl-list li{color:#18181b;}
+    .hl-check{width:20px;height:20px;background:rgba(167,139,250,.2);border:1px solid rgba(167,139,250,.4);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;font-size:11px;color:#a78bfa;}
+    .glow{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0;}
+    .slide>*{position:relative;z-index:1;}
+    .outro-logo{font-size:72px;font-weight:900;letter-spacing:-0.06em;background:linear-gradient(135deg,#fff 0%,#c4b5fd 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .outro-link{padding:12px 28px;border-radius:14px;font-size:14px;font-weight:700;text-decoration:none;transition:all 0.2s;}
+    .outro-link-primary{background:var(--accent);color:#fff;}
+    .outro-link-secondary{background:rgba(255,255,255,.08);color:#d8b4fe;border:1px solid rgba(255,255,255,.12);}
+    .key-hint{position:fixed;bottom:28px;left:36px;font-size:11px;color:rgba(255,255,255,.28);letter-spacing:.04em;}
+  </style>
+</head>
+<body>
+<div class="progress-bar" id="progress"></div>
+<div class="deck" id="deck">
+
+<!-- SLIDE 1: TITLE -->
+<div class="slide bg-dark active" data-slide="1">
+  <div class="glow" style="width:500px;height:500px;background:rgba(91,33,182,.35);top:-100px;right:-100px;"></div>
+  <div class="glow" style="width:350px;height:350px;background:rgba(124,58,237,.2);bottom:-80px;left:50px;"></div>
+  <div style="text-align:center;z-index:1;">
+    <div class="eyebrow"><span class="eyebrow-dot"></span>Portfolio Project — Full-Stack Fintech App</div>
+    <div class="title-wordmark">glide</div>
+    <p class="subtitle">A mutual-fund-backed, no-cost EMI shopping platform inspired by <strong style="color:#c4b5fd;">1fi.in</strong>. Built end-to-end.</p>
+    <div style="display:flex;gap:10px;margin-top:28px;flex-wrap:wrap;justify-content:center;">
+      <span class="title-pill">React 19 + Vite</span>
+      <span class="title-pill">Express + Neon PostgreSQL</span>
+      <span class="title-pill">Prisma ORM</span>
+      <span class="title-pill">Tailwind CSS v4</span>
+      <span class="title-pill">6 Routes · 5 APIs · Rule-based Chatbot</span>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 2: WHAT IS GLIDE -->
+<div class="slide bg-accent" data-slide="2">
+  <div class="slide-inner">
+    <div class="eyebrow"><span class="eyebrow-dot"></span>Product Concept</div>
+    <h2>What problem does Glide solve?</h2>
+    <p class="subtitle">Traditional EMI requires credit cards (16–18% interest) or CIBIL scores. Glide replaces that with your mutual fund portfolio as collateral.</p>
+    <div class="three-col" style="margin-top:40px;">
+      <div class="card">
+        <div class="card-icon">💳</div>
+        <h3>Old Way: Credit Card EMI</h3>
+        <p>16–18% p.a. interest, credit score inquiry, hidden processing fees, foreclosure penalties.</p>
+      </div>
+      <div class="card" style="background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25);">
+        <div class="card-icon" style="background:rgba(167,139,250,.3);">🚀</div>
+        <h3 style="color:#fff;">Glide: Mutual Fund EMI</h3>
+        <p style="color:#ede9fe;">0% interest up to 24 months, zero CIBIL impact, your portfolio keeps compounding.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📈</div>
+        <h3>Funds Stay Invested</h3>
+        <p>Digital lien on liquid fund units. Dividends and NAV growth continue crediting to your account.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: TECH STACK -->
+<div class="slide bg-dark" data-slide="3">
+  <div class="glow" style="width:600px;height:300px;background:rgba(91,33,182,.2);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+  <div class="slide-inner">
+    <div class="eyebrow"><span class="eyebrow-dot"></span>Architecture</div>
+    <h2>Full-Stack Tech Stack</h2>
+    <div class="two-col" style="margin-top:40px;">
+      <div>
+        <p style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:#6b7280;font-weight:700;margin-bottom:14px;">Frontend</p>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+          <span class="tech-badge">⚛️ React 19</span><span class="tech-badge">⚡ Vite 8</span>
+          <span class="tech-badge">🛤️ React Router v7</span><span class="tech-badge">🎨 Tailwind CSS v4</span>
+          <span class="tech-badge">🧠 Context API + localStorage</span>
+        </div>
+        <p style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:#6b7280;font-weight:700;margin-bottom:14px;margin-top:28px;">Backend</p>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+          <span class="tech-badge">🟢 Node.js + Express</span><span class="tech-badge">🐘 Neon PostgreSQL</span>
+          <span class="tech-badge">🔷 Prisma ORM v6</span><span class="tech-badge">🔒 CORS + dotenv</span>
+        </div>
+        <p style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:#6b7280;font-weight:700;margin-bottom:14px;margin-top:28px;">Design System</p>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+          <span class="tech-badge">🟣 #5B21B6 Deep Violet</span>
+          <span class="tech-badge">🟢 0% Success Green</span>
+          <span class="tech-badge">⚫ #0F0A1A Dark Footer</span>
+        </div>
+      </div>
+      <div class="code-block">
+<span style="color:#6b7280;">1fi/</span>
+<span style="color:#6b7280;">├──</span> <span style="color:#93c5fd;">frontend/</span>
+<span style="color:#6b7280;">│   ├──</span> <span style="color:#c084fc;">components/</span>  <span style="color:#6b7280;">← 8 reusable</span>
+<span style="color:#6b7280;">│   ├──</span> <span style="color:#c084fc;">pages/</span>       <span style="color:#6b7280;">← 5 routes</span>
+<span style="color:#6b7280;">│   └──</span> <span style="color:#c084fc;">context/</span>     <span style="color:#6b7280;">← CartContext</span>
+<span style="color:#6b7280;">├──</span> <span style="color:#86efac;">backend/</span>
+<span style="color:#6b7280;">│   ├──</span> <span style="color:#fb923c;">prisma/</span>
+<span style="color:#6b7280;">│   │   ├──</span> schema.prisma
+<span style="color:#6b7280;">│   │   └──</span> seed.js
+<span style="color:#6b7280;">│   └──</span> <span style="color:#fb923c;">src/routes/</span>
+<span style="color:#6b7280;">│       ├──</span> products.js
+<span style="color:#6b7280;">│       └──</span> chat.js
+<span style="color:#6b7280;">└──</span> README.md
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: DATABASE -->
+<div class="slide bg-subtle" data-slide="4">
+  <div class="slide-inner">
+    <div class="eyebrow" style="background:var(--accent-light);color:var(--accent);border-color:rgba(91,33,182,.2);"><span class="eyebrow-dot" style="background:var(--accent);"></span>Data Model</div>
+    <h2>Relational Database Schema</h2>
+    <div class="two-col" style="margin-top:32px;align-items:start;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="er-box">Product
+  id · slug (unique) · name
+  brand · category · description
+  createdAt</div>
+        <div style="color:#7c3aed;font-size:22px;padding-left:24px;">↓  1 : many</div>
+        <div class="er-box">ProductVariant
+  id · productId (FK) · variantLabel
+  storage · color · colorHex
+  mrp · price · imageUrl
+  stock · isDefault</div>
+        <div style="color:#7c3aed;font-size:22px;padding-left:24px;">↓  1 : many</div>
+        <div class="er-box">EmiPlan
+  id · variantId (FK)
+  tenureMonths · monthlyAmount
+  interestRate · cashbackAmount
+  fundName · isActive</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="card" style="background:var(--accent-light);border-color:rgba(91,33,182,.2);">
+          <div style="font-size:42px;font-weight:900;color:var(--accent);letter-spacing:-.04em;">6 Products</div>
+          <p style="color:var(--gray);font-size:13px;margin-top:6px;">iPhone 17 Pro · Galaxy S24 Ultra · OnePlus 13 · MacBook Pro M4 · Dell XPS 15 · Sony WH-1000XM5 across 3 categories</p>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div class="card" style="background:var(--success-bg);border-color:rgba(21,128,61,.2);padding:20px;">
+            <div style="font-size:38px;font-weight:900;color:var(--success);">21</div>
+            <div style="color:var(--success);font-weight:700;font-size:13px;margin-top:4px;">Variants</div>
+          </div>
+          <div class="card" style="padding:20px;">
+            <div style="font-size:38px;font-weight:900;color:var(--accent);">147</div>
+            <div style="color:var(--accent);font-weight:700;font-size:13px;margin-top:4px;">EMI Plans</div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="font-size:13px;font-weight:700;color:#18181b;margin-bottom:10px;">EMI Tier Structure</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            <span class="pill pill-green">3m · 0%</span><span class="pill pill-green">6m · 0%</span>
+            <span class="pill pill-green">12m · 0%</span><span class="pill pill-green">24m · 0%</span>
+            <span class="pill pill-violet">36m · 10.5%</span><span class="pill pill-violet">48m · 10.5%</span>
+            <span class="pill pill-violet">60m · 10.5%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: APIS -->
+<div class="slide bg-dark" data-slide="5">
+  <div class="glow" style="width:400px;height:400px;background:rgba(91,33,182,.15);bottom:-100px;right:-50px;"></div>
+  <div class="slide-inner">
+    <div class="eyebrow"><span class="eyebrow-dot"></span>Backend APIs</div>
+    <h2>REST API Endpoints</h2>
+    <div class="two-col" style="margin-top:36px;align-items:start;">
+      <div>
+        <table class="route-table">
+          <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method method-get">GET</span></td><td><span class="route-path">/api/products</span></td><td style="color:#9ca3af;">All products<br><small style="color:#6b7280;">?category= &amp; ?search=</small></td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><span class="route-path">/api/products/:slug</span></td><td style="color:#9ca3af;">Full product + variants + EMI plans</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><span class="route-path">…/variants/:id/emi-plans</span></td><td style="color:#9ca3af;">Plans for specific variant</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><span class="route-path">/api/chat</span></td><td style="color:#9ca3af;">Rule-based fintech chatbot</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><span class="route-path">/api/health</span></td><td style="color:#9ca3af;">Health check</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:18px;padding:14px 18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;font-size:13px;color:#a1a1aa;">
+          ✨ In-memory caching (30s TTL) · CORS · proper 404/500 · parameterized SQL
+        </div>
+      </div>
+      <div class="code-block">
+<span style="color:#6b7280;">// POST /api/chat — Request</span>
+{ <span style="color:#86efac;">"message"</span>: <span style="color:#fb923c;">"Am I eligible?"</span> }
+
+<span style="color:#6b7280;">// Response (instant, rule-based)</span>
+{
+  <span style="color:#86efac;">"reply"</span>: <span style="color:#fb923c;">"No CIBIL check required!
+  MF holdings worth 1.5× the
+  gadget value = instant ✅"</span>,
+  <span style="color:#86efac;">"source"</span>: <span style="color:#fb923c;">"rule-based"</span>
+}
+
+<span style="color:#6b7280;">// GET /api/products?category=Laptops</span>
+<span style="color:#6b7280;">// → MacBook Pro 14" M4</span>
+<span style="color:#6b7280;">// → Dell XPS 15 OLED</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: HOMEPAGE + SHOP -->
+<div class="slide bg-subtle" data-slide="6">
+  <div class="slide-inner">
+    <div class="eyebrow" style="background:var(--accent-light);color:var(--accent);border-color:rgba(91,33,182,.2);"><span class="eyebrow-dot" style="background:var(--accent);"></span>Frontend Pages</div>
+    <h2>Homepage &amp; Shop Catalog</h2>
+    <div class="two-col" style="margin-top:32px;align-items:start;">
+      <div>
+        <h3 style="color:var(--accent);margin-bottom:14px;">/ — Homepage (8 Sections)</h3>
+        <ul class="hl-list">
+          <li><span class="hl-check">✓</span>Hero with rotating product showcase &amp; Eligibility modal</li>
+          <li><span class="hl-check">✓</span>Best Sellers grid with quick "Add to Cart"</li>
+          <li><span class="hl-check">✓</span>4-step "How It Works" (responsive layout)</li>
+          <li><span class="hl-check">✓</span>6-card "Key Benefits" — 0% interest, no CIBIL, funds keep earning</li>
+          <li><span class="hl-check">✓</span><strong>Interactive EMI Calculator</strong> — slider comparing MF growth vs credit card interest</li>
+          <li><span class="hl-check">✓</span>Auto-playing Testimonials Carousel with dot nav</li>
+          <li><span class="hl-check">✓</span>FAQ Accordion with smooth animation</li>
+          <li><span class="hl-check">✓</span>Dark #0F0A1A Footer with regulatory notes</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color:var(--accent);margin-bottom:14px;">/shop — Filterable Catalog</h3>
+        <ul class="hl-list">
+          <li><span class="hl-check">✓</span>Category pills: All / Smartphones / Laptops / Audio</li>
+          <li><span class="hl-check">✓</span>Keyword search bar with real-time filtering</li>
+          <li><span class="hl-check">✓</span>Price range slider (₹30K – ₹2.5L)</li>
+          <li><span class="hl-check">✓</span>Sort by: Popular / Price Low–High / High–Low</li>
+          <li><span class="hl-check">✓</span>ProductCard: MRP strikethrough, "From ₹X/mo", 0% badge</li>
+          <li><span class="hl-check">✓</span>Quick ➕ adds default 24m 0% plan instantly to cart</li>
+          <li><span class="hl-check">✓</span>Loading skeletons &amp; empty-filter state</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: PDP + CART + CHECKOUT -->
+<div class="slide bg-dark" data-slide="7">
+  <div class="glow" style="width:400px;height:400px;background:rgba(91,33,182,.15);top:0;left:0;"></div>
+  <div class="slide-inner">
+    <div class="eyebrow"><span class="eyebrow-dot"></span>Core Shopping Flow</div>
+    <h2>Product Detail → Cart → Checkout</h2>
+    <div class="two-col" style="margin-top:32px;align-items:start;">
+      <div>
+        <h3 style="color:#a78bfa;margin-bottom:12px;">/products/:slug</h3>
+        <ul class="hl-list" style="font-size:14px;">
+          <li><span class="hl-check" style="border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.2);">✓</span>2-col layout: Image gallery + EMI stack</li>
+          <li><span class="hl-check" style="border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.2);">✓</span>Color swatches + storage pills with smooth crossfade</li>
+          <li><span class="hl-check" style="border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.2);">✓</span>7 EMI radio cards: monthly amount, 0%/10.5% badge, fund name, ₹7,500 cashback</li>
+          <li><span class="hl-check" style="border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.2);">✓</span><strong style="color:#a78bfa;">Add to Cart</strong> → floating toast with "View Cart →"</li>
+          <li><span class="hl-check" style="border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.2);">✓</span><strong style="color:#a78bfa;">Buy Now</strong> → direct route to /cart</li>
+          <li><span class="hl-check" style="border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.2);">✓</span>"Why EMI with Glide?" 3-card trust strip</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color:#a78bfa;margin-bottom:12px;">/cart &amp; /checkout</h3>
+        <ul class="hl-list" style="font-size:14px;">
+          <li><span class="hl-check" style="border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.2);">✓</span>Line items: thumbnail, variant label, EMI plan summary</li>
+          <li><span class="hl-check" style="border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.2);">✓</span><strong style="color:#a78bfa;">In-cart plan switcher</strong> — change tenure without leaving cart</li>
+          <li><span class="hl-check" style="border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.2);">✓</span>Order summary: device value + per-item monthly outflow breakdown + cashback</li>
+          <li><span class="hl-check" style="border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.2);">✓</span>Empty cart state with illustration</li>
+          <li><span class="hl-check" style="border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.2);">✓</span>Checkout: PAN + Aadhaar OTP mock simulation</li>
+          <li><span class="hl-check" style="border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.2);">✓</span>Confirmation: order ID, auto-debit date, cashback credit timeline</li>
+          <li><span class="hl-check" style="border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.2);">✓</span>Cart persists in localStorage via React Context</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8: CHATBOT -->
+<div class="slide bg-accent" data-slide="8">
+  <div class="slide-inner">
+    <div class="eyebrow"><span class="eyebrow-dot"></span>Engagement Feature</div>
+    <h2>Floating Fintech Assistant</h2>
+    <p class="subtitle">Rule-based chatbot wired to <code style="background:rgba(255,255,255,.12);padding:2px 8px;border-radius:6px;font-size:14px;">POST /api/chat</code> — instant responses, no LLM API costs.</p>
+    <div class="two-col" style="margin-top:36px;align-items:start;">
+      <ul class="hl-list" style="color:#fff;">
+        <li><span class="hl-check" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3);color:#fff;">✓</span>Bottom-right floating violet button, gentle bounce on first load</li>
+        <li><span class="hl-check" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3);color:#fff;">✓</span>Smooth expand/collapse animation</li>
+        <li><span class="hl-check" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3);color:#fff;">✓</span>6 quick-reply chips for common questions</li>
+        <li><span class="hl-check" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3);color:#fff;">✓</span>3-dot typing indicator animation</li>
+        <li><span class="hl-check" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3);color:#fff;">✓</span>Topics: 0% EMI, eligibility, CIBIL, documents, cashback, fund safety, foreclosure, product recommendations</li>
+        <li><span class="hl-check" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3);color:#fff;">✓</span>Friendly fallback for unrecognized queries</li>
+      </ul>
+      <div class="card" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);">
+        <div style="display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:14px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;">⚡</div>
+          <div><div style="font-weight:700;font-size:14px;">Glide Assistant</div><div style="font-size:11px;color:rgba(255,255,255,.5);">● Instant FAQ Bot</div></div>
+        </div>
+        <div class="chat-row">
+          <div class="chat-bubble bot">👋 Ask me about 0% EMI, eligibility, or product recommendations!</div>
+          <div class="chat-bubble user">Am I eligible?</div>
+          <div class="chat-bubble bot">No CIBIL check needed! MF holdings worth 1.5× the gadget value = instant approval ✅</div>
+          <div class="chat-bubble user">What's the cashback?</div>
+          <div class="chat-bubble bot">Every Glide purchase includes a flat <strong>₹7,500 instant cashback</strong> within 24 hours! 🎁</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 9: SCOPE + DEPLOYMENT -->
+<div class="slide bg-subtle" data-slide="9">
+  <div class="slide-inner">
+    <div class="eyebrow" style="background:var(--accent-light);color:var(--accent);border-color:rgba(91,33,182,.2);"><span class="eyebrow-dot" style="background:var(--accent);"></span>Architecture Decisions</div>
+    <h2>Backend vs Frontend Demo Split</h2>
+    <div class="two-col" style="margin-top:28px;align-items:start;">
+      <div>
+        <div style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:#15803d;font-weight:700;margin-bottom:14px;">✅ Real Backend (Neon PostgreSQL)</div>
+        <ul class="hl-list">
+          <li><span class="hl-check" style="background:rgba(21,128,61,.1);border-color:rgba(21,128,61,.3);color:#15803d;">✓</span>Products, variants &amp; EMI plans from live DB</li>
+          <li><span class="hl-check" style="background:rgba(21,128,61,.1);border-color:rgba(21,128,61,.3);color:#15803d;">✓</span>Category &amp; keyword search with parameterized SQL</li>
+          <li><span class="hl-check" style="background:rgba(21,128,61,.1);border-color:rgba(21,128,61,.3);color:#15803d;">✓</span>In-memory TTL cache on Express (30s)</li>
+          <li><span class="hl-check" style="background:rgba(21,128,61,.1);border-color:rgba(21,128,61,.3);color:#15803d;">✓</span>Chatbot rule engine on server</li>
+          <li><span class="hl-check" style="background:rgba(21,128,61,.1);border-color:rgba(21,128,61,.3);color:#15803d;">✓</span>CORS, 404/500 handlers, health check</li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:#d97706;font-weight:700;margin-bottom:14px;">📦 Frontend-only (Clearly Labeled)</div>
+        <ul class="hl-list">
+          <li><span class="hl-check" style="background:rgba(217,119,6,.1);border-color:rgba(217,119,6,.3);color:#d97706;">✓</span>Cart state → React Context + localStorage</li>
+          <li><span class="hl-check" style="background:rgba(217,119,6,.1);border-color:rgba(217,119,6,.3);color:#d97706;">✓</span>Checkout → mock pledge simulation, no real payment</li>
+          <li><span class="hl-check" style="background:rgba(217,119,6,.1);border-color:rgba(217,119,6,.3);color:#d97706;">✓</span>Testimonials &amp; FAQ → static marketing copy</li>
+          <li><span class="hl-check" style="background:rgba(217,119,6,.1);border-color:rgba(217,119,6,.3);color:#d97706;">✓</span>EMI Calculator → client-side math only</li>
+        </ul>
+        <div style="margin-top:20px;padding:14px 18px;background:#fff;border:1px solid var(--divider);border-radius:12px;font-size:13px;color:var(--gray);">
+          <strong style="color:#18181b;">Deployment-ready:</strong><br>
+          Backend → Render/Railway (set <code>DATABASE_URL</code>)<br>
+          Frontend → Vercel (set <code>VITE_API_BASE_URL</code>)
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 10: OUTRO -->
+<div class="slide bg-dark" data-slide="10">
+  <div class="glow" style="width:600px;height:600px;background:rgba(91,33,182,.3);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+  <div style="text-align:center;z-index:1;">
+    <div class="eyebrow"><span class="eyebrow-dot"></span>Live at localhost:5173</div>
+    <div class="outro-logo">glide</div>
+    <p class="title-tagline">Full-stack. Fintech-confident. Portfolio-grade.<br><span class="accent-text">Built from scratch in a single session.</span></p>
+    <div style="display:flex;justify-content:center;gap:16px;margin-top:32px;flex-wrap:wrap;">
+      <div class="stat-box" style="min-width:120px;"><div class="stat-num">6</div><div class="stat-label">Routes</div></div>
+      <div class="stat-box" style="min-width:120px;"><div class="stat-num">5</div><div class="stat-label">REST APIs</div></div>
+      <div class="stat-box" style="min-width:120px;"><div class="stat-num">6</div><div class="stat-label">Products</div></div>
+      <div class="stat-box" style="min-width:120px;"><div class="stat-num">147</div><div class="stat-label">EMI Plans</div></div>
+      <div class="stat-box" style="min-width:120px;"><div class="stat-num">8</div><div class="stat-label">Components</div></div>
+    </div>
+    <div style="display:flex;gap:16px;margin-top:32px;flex-wrap:wrap;justify-content:center;">
+      <a class="outro-link outro-link-primary" href="http://localhost:5173" target="_blank">🚀 Open Live App</a>
+      <a class="outro-link outro-link-secondary" href="http://localhost:3001/api/products" target="_blank">📡 View Raw API</a>
+    </div>
+  </div>
+</div>
+
+</div><!-- /.deck -->
+
+<div class="nav-controls">
+  <button class="nav-btn" onclick="navigate(-1)">←</button>
+  <span class="slide-counter" id="counter">1 / 10</span>
+  <button class="nav-btn" onclick="navigate(1)">→</button>
+</div>
+<div class="key-hint">← → Arrow keys · Space to advance</div>
+
+<script>
+  const TOTAL = 10;
+  let current = 1;
+  function showSlide(n) {
+    const prev = document.querySelector('.slide.active');
+    current = Math.max(1, Math.min(TOTAL, n));
+    if(prev) { prev.style.opacity='0'; prev.style.transform='translateX(-40px)'; setTimeout(()=>{ prev.classList.remove('active'); prev.style.opacity=''; prev.style.transform=''; }, 520); }
+    const next = document.querySelector('[data-slide="'+current+'"]');
+    if(next) { setTimeout(()=>{ next.classList.add('active'); }, prev ? 80 : 0); }
+    document.getElementById('counter').textContent = current+' / '+TOTAL;
+    document.getElementById('progress').style.width = (current/TOTAL*100)+'%';
+  }
+  function navigate(d) { if(current+d>=1 && current+d<=TOTAL) showSlide(current+d); }
+  document.addEventListener('keydown', e => {
+    if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();navigate(1);}
+    if(e.key==='ArrowLeft'){e.preventDefault();navigate(-1);}
+  });
+  document.getElementById('progress').style.width='10%';
+</script>
+</body>
+</html>
