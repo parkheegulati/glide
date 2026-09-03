@@ -1,8 +1,11 @@
+
 # Glide — Mutual Fund-Backed No-Cost EMI Shopping Platform
 
 **"Shop today. Pay later. Powered by your mutual funds."**
 
 Glide is a portfolio-grade, full-stack fintech shopping platform inspired by **1fi.in** (India's leading LAMF — Loan Against Mutual Funds — shopping platform). It enables users to purchase flagship smartphones, laptops, and audio gear with **0% interest EMI plans** backed by their existing liquid mutual fund investments.
+
+<img width="1121" height="750" alt="Screenshot 2026-09-03 at 2 05 08 PM" src="https://github.com/user-attachments/assets/14a0125c-b948-43fd-8066-7644e75bdf20" />
 
 ---
 
